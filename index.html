@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Global Vessel Tracker - DNS Fix</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <style>
+        body, html { margin: 0; padding: 0; height: 100%; background: #111; }
+        #windy { width: 100vw; height: 100vh; }
+        #status-msg {
+            position: absolute; top: 10px; left: 10px; z-index: 10000;
+            background: rgba(0,0,0,0.8); color: #00ffcc; padding: 10px;
+            border: 1px solid #00ffcc; font-family: sans-serif;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="status-msg">시스템 확인 중...</div>
+    <div id="windy"></div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <script src="https://unpkg.com/@windycom/leaflet-v4"></script>
+
+    <script>
+        const statusEl = document.getElementById('status-msg');
+
+        window.onload = function() {
+            // windyInit이 정상적으로 로드되었는지 최종 확인
+            if (typeof windyInit === 'undefined') {
+                statusEl.innerHTML = "<span style='color:red'>❌ 여전히 라이브러리를 불러오지 못하고 있습니다.<br>인터넷 연결이나 보안 정책을 확인해 주세요.</span>";
+                return;
+            }
+
+            const options = {
+                key: 'ZubTMFcvKH87utliHssmxu0MzssuX6oI', // <-- 여기에 실제 키를 넣으세요!
+                lat: 34.5,
+                lon: 128.0,
+                zoom: 5,
+            };
+
+            windyInit(options, (windyAPI) => {
+                const { map } = windyAPI;
+                statusEl.innerText = "🚢 시스템 가동 완료";
+                
+                L.marker([34.5, 128.0]).addTo(map).bindTooltip("TEST SHIP").openTooltip();
+                
+                setTimeout(() => statusEl.style.display = 'none', 3000);
+            });
+        };
+    </script>
+</body>
+</html>
